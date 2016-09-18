@@ -1,7 +1,7 @@
 <?php
 use App\User;
 
-Auth::loginUsingId(1);
+Auth::loginUsingId(3);
 
 Route::get('/', function () {
   $user = Auth::user();
@@ -43,4 +43,28 @@ Route::get('cancel', function () {
   Auth::user()->subscription()->cancel();
   return 'Canceled';
 });
+
+Route::get('invoices', function () {
+  $invoices = Auth::user()->invoices(); //not single invoice
+  return view('invoices' , compact('invoices'));
+});
+
+Route::get('invoice/{id}', function ($id) {
+  $invoice = Auth::user()->findInvoiceOrFail($id);
+
+  return $invoice->view([
+    'vendor' => 'Store subscription',
+    'product' => 'Subscription'
+    ]);
+});
+
+Route::get('invoice/{id}/download', function ($id) {
+  $invoice = Auth::user()->findInvoiceOrFail($id);
+
+  return $invoice->download([
+    'vendor' => 'Store subscription',
+    'product' => 'Subscription'
+    ]);
+});
+
 
