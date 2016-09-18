@@ -24,11 +24,23 @@ Route::get('subscribe', function () {
 });
 
 Route::post('subscribe' , function () {
-  Auth::user()->subscription('monthlyPremium')->create(Input::get('stripeToken'));
+  Auth::user()->subscription('monthlyPremium')->withCoupon('special')->create(Input::get('stripeToken'));
   return 'Subscribed for one premium month';
 });
 
 Route::get('swap' , function () {
   Auth::user()->subscription('monthly')->swapAndInvoice();
+  /* Auth::user->subscription()->decrementAndInvoice(); //in case you want to to decrease number in subscription */
   return 'Swapped to monthly';
 });
+
+Route::get('coupon', function() {
+  Auth::user()->applyCoupon('special');
+  return 'Coupon applied';
+});
+
+Route::get('cancel', function () {
+  Auth::user()->subscription()->cancel();
+  return 'Canceled';
+});
+
