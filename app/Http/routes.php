@@ -16,3 +16,19 @@ Route::post('/', function () {
     Auth::user()->charge($total * 100, ['source' => Input::get('stripeToken')]);
     return 'Charged';
 });
+
+
+Route::get('subscribe', function () {
+  $user = Auth::user();
+  return view('subscribe' , compact('user'));
+});
+
+Route::post('subscribe' , function () {
+  Auth::user()->subscription('monthlyPremium')->create(Input::get('stripeToken'));
+  return 'Subscribed for one premium month';
+});
+
+Route::get('swap' , function () {
+  Auth::user()->subscription('monthly')->swapAndInvoice();
+  return 'Swapped to monthly';
+});
